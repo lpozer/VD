@@ -2,16 +2,14 @@ package com.example.vd;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import jdk.nashorn.internal.parser.JSONParser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -19,13 +17,20 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 
 @RestController
+@SpringBootApplication
 public class VdController {
 
-    private final AtomicLong counter = new AtomicLong();
+    @Autowired
+    private VdRepository repository;
 
     @RequestMapping(value = "/vd", method = RequestMethod.GET)
-    public Vd getVd(){
-        return new Vd(counter.getAndIncrement(), "Vd de Teste");
+    public List<Vd> getVd(){
+        return repository.findAll();
+    }
+
+    @RequestMapping(value = "/vd/{id}", method = RequestMethod.GET)
+    public Vd getVdById(@PathVariable String id){
+        return repository.findById(Long.parseLong(id));
     }
 
     @RequestMapping(value = "/vd", method = RequestMethod.POST)
@@ -33,10 +38,13 @@ public class VdController {
         try {
             System.out.println(body);
             JsonObject obj = new JsonParser().parse(body).getAsJsonObject();
-            System.out.println(obj.get("title").toString().replaceAll("\"", ""));
-            System.out.println(obj.get("erro").toString());
-            return new ResponseEntity<Vd>(new Vd(Long.parseLong(obj.get("id").toString()), obj.get("title").toString().replaceAll("\"", "")), HttpStatus.OK);
-        } catch (NullPointerException e){
+            String title = obj.get("title").toString().replaceAll("\"", "");
+
+            Vd vd = new Vd((repository.count()+1), title);
+            repository.save(vd);
+
+            return new ResponseEntity<Vd>(vd, HttpStatus.OK);
+        } catch (Exception e){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
