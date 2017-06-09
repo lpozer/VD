@@ -1,5 +1,7 @@
 package com.example.vd;
 
+import com.google.gson.JsonObject;
+
 /**
  * Created by leandropozer on 06/06/17.
  */
@@ -11,8 +13,15 @@ public class User {
     private String bank_agency;
     private String project;
 
-
     public User(){}
+
+    public User(JsonObject user){
+        this.name = user.get("name").getAsString();
+        this.cpf = user.get("cpf").getAsString();
+        this.bank_account = user.get("bank_account").getAsString();
+        this.bank_agency = user.get("bank_agency").getAsString();
+        this.project = user.get("project").getAsString();
+    }
 
     public User(String name, String cpf, String bank_account, String bank_agency, String project){
         this.name = name;
