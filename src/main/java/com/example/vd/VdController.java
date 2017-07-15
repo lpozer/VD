@@ -1,17 +1,17 @@
 package com.example.vd;
 
+import com.example.vd.user.User;
+import com.example.vd.user.UserService;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,7 +19,6 @@ import java.util.List;
  */
 
 @RestController
-@SpringBootApplication
 public class VdController {
 
     @Autowired
@@ -49,6 +48,8 @@ public class VdController {
     }
 
     private Vd parseBody(String body){
+        UserService userService = new UserService();
+
         //parse body
         JsonObject body_json = new JsonParser().parse(body).getAsJsonObject();
         String title = body_json.get("title").getAsString();

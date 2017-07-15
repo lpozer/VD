@@ -1,5 +1,9 @@
 package com.example.vd;
 
+import com.example.vd.user.User;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.data.annotation.Id;
 
 import java.util.ArrayList;
@@ -9,6 +13,9 @@ import java.util.List;
 /**
  * Created by leandropozer on 30/05/17.
  */
+@ComponentScan
+@Configuration
+@EnableAutoConfiguration
 public class Vd {
 
     @Id
